@@ -30,6 +30,6 @@ app.on('activate', () => {
         createWindow();
         console.log(BrowserWindow.getAllWindows());
     }
-})
+});
 
 console.log(process.platform);

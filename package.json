@@ -1,19 +1,63 @@
 {
   "name": "invoice",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "This application compiles templates from remote library and save it.",
+  "main": "src/main.js",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron-forge start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "npm"
+      },
+      "electronWinstallerConfig": {
+        "name": "invoice"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "invoice"
+      }
+    }
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Doual Sofian",
+    "email": "sofiand.dev@gmail.com",
+    "url": "https://fr.linkedin.com/in/sofiandoual"
+  },
   "license": "ISC",
   "devDependencies": {
-    "electron": "^12.0.1"
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "8.2.0"
   },
   "dependencies": {
-    "@sofiand/invoice": "0.0.1"
+    "@sofiand/invoice": "0.0.1",
+    "electron-compile": "^6.4.4",
+    "electron-squirrel-startup": "^1.0.0"
   }
 }

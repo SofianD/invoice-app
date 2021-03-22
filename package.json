@@ -14,6 +14,6 @@
     "electron": "^12.0.1"
   },
   "dependencies": {
-    "@sofiand/invoice": "0.0.1"
+    "@sofiand/invoice": "0.0.2"
   }
 }

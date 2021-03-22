@@ -1,35 +1,42 @@
 const invoicejs = require('@sofiand/invoice');
 // const app = require('electron')
 
-const PARAMS = [
-    {
-        name: 'invoiceJS-lib',
-        url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
-        url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
-    }
-];
+const PARAMS = {
+    path: {
+        toGetFiles: '',
+        toSaveFiles: 'C:/Users/Sofian/Documents/MyPDF/'
+    },
+    libs: [
+        {
+            name: 'invoiceJS-lib',
+            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
+            url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
+        }
+    ]
+};
 let allTemplates = [];
 let data = [];
 let selectedTemplate, selectedForm, multiInputModel, nameOfMultiInput;
-let multiInputArr = []
+let multiInputArr = [];
+let selectedLib;
 
 window.onload = async function() {
     // console.log(app)
     // app.ipcRenderer.postMessage()
     const ulLib = document.getElementById('libraries');
-    for(let i = 0, l = PARAMS.length; i < l; i++) {
+    for(let i = 0, l = PARAMS.libs.length; i < l; i++) {
         const param = [
             {
                 key: 'id',
-                value: PARAMS[i].name.split(' ').join('-')
+                value: PARAMS.libs[i].name.split(' ').join('-')
             },
             {
                 key: 'innerText',
-                value: PARAMS[i].name
+                value: PARAMS.libs[i].name
             },
             {
                 key: 'id',
-                value: PARAMS[i].name.split(' ').join('-')
+                value: PARAMS.libs[i].name.split(' ').join('-')
             },
             {
                 key: 'onclick',
@@ -41,7 +48,7 @@ window.onload = async function() {
             }
         ]
         await createElement(ulLib, 'li', param);
-        PARAMS[i]['id'] = PARAMS[i].name.split(' ').join('-');
+        PARAMS.libs[i]['id'] = PARAMS.libs[i].name.split(' ').join('-');
     }
 }
 
@@ -59,13 +66,14 @@ async function createElement(parent, element, arrayOfParams) {
 
 async function getTemplatesFrom(el) {
     allTemplates = [];
-    const t = PARAMS.filter(x => x.id === el.target.id);
+    const t = PARAMS.libs.filter(x => x.id === el.target.id);
     try {
         allTemplates = await invoicejs.getListOfTemplates(t[0].url_api);
     } catch (error) {
         console.log(error);
         return;
     }
+    selectedLib = t[0];
     const a = document.getElementById('list-of-template');
     a.innerHTML = '';
     await createLI(allTemplates, a, getTemplate);
@@ -76,8 +84,8 @@ async function getTemplatesFrom(el) {
 async function getTemplate(el) {
     const t = allTemplates.filter(x => x.id === el.target.id)[0];
     try {
-        selectedForm = await invoicejs.getForm(t.name);
-        selectedTemplate = await invoicejs.getTemplate(t.name);
+        selectedForm = await invoicejs.getForm(selectedLib.url, t.name);
+        selectedTemplate = await invoicejs.getTemplate(selectedLib.url, t.name);
         const f = document.getElementById('template-form');
         // console.log(selectedForm);
         // console.log(selectedTemplate);
@@ -210,8 +218,14 @@ async function getResponse(data) {
 }
 
 async function compileAndSave() {
-    const response =  await invoicejs.getAndSaveInvoice(selectedTemplate, data);
-    console.log(response);
-    data = [];
-    getResponse(response);
+    try {
+        const response =  await invoicejs.getAndSaveInvoice(selectedTemplate, data, {
+            toSaveFiles: PARAMS.path.toSaveFiles
+        });
+        // console.log(response);
+        data = [];
+        getResponse(response);
+    } catch (error) {
+        throw new Error(error);
+    }
 }

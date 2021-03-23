@@ -11,6 +11,16 @@ const PARAMS = {
             name: 'invoiceJS-lib',
             url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
             url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
+        },
+        {
+            name: 'A-lib',
+            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
+            url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
+        },
+        {
+            name: 'Z-liba',
+            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
+            url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
         }
     ]
 };
@@ -20,7 +30,14 @@ let selectedTemplate, selectedForm, multiInputModel, nameOfMultiInput;
 let multiInputArr = [];
 let selectedLib;
 
+//  view
+let libsAreVisible = true;
+let templatesAreVisible = false;
+
 window.onload = async function() {
+
+    PARAMS.libs = PARAMS.libs.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
+
     // console.log(app)
     // app.ipcRenderer.postMessage()
     const ulLib = document.getElementById('libraries');
@@ -43,11 +60,11 @@ window.onload = async function() {
                 value: getTemplatesFrom
             },
             {
-                key: 'style',
-                value: 'cursor: pointer; text-decoration: underline;'
+                key: 'className',
+                value: 'purple-bg'
             }
         ]
-        await createElement(ulLib, 'li', param);
+        await createElement(ulLib, 'div', param);
         PARAMS.libs[i]['id'] = PARAMS.libs[i].name.split(' ').join('-');
     }
 }
@@ -65,6 +82,7 @@ async function createElement(parent, element, arrayOfParams) {
 }
 
 async function getTemplatesFrom(el) {
+    hideLibs();
     allTemplates = [];
     const t = PARAMS.libs.filter(x => x.id === el.target.id);
     try {
@@ -76,8 +94,9 @@ async function getTemplatesFrom(el) {
     selectedLib = t[0];
     const a = document.getElementById('list-of-template');
     a.innerHTML = '';
-    await createLI(allTemplates, a, getTemplate);
-
+    await createDiv(allTemplates, a, getTemplate);
+    templatesAreVisible = false;
+    hideTemplates();
     return;
 }
 
@@ -89,10 +108,12 @@ async function getTemplate(el) {
         const f = document.getElementById('template-form');
         // console.log(selectedForm);
         // console.log(selectedTemplate);
-        f.innerHTML = selectedForm;
+        f.outerHTML = selectedForm;
         selectedForm = document.getElementById('myForm');
         selectedForm.onsubmit = pushFormData;
+        document.getElementById('form-body').className += ' grid';
         getInputArr();
+        hideTemplates();
     } catch (error) {
         console.log(error);
         return;
@@ -112,7 +133,7 @@ function getInputArr() {
     document.getElementById('add-param').onclick = pushdataInInputArr;
 }
 
-function pushdataInInputArr(event) {
+async function pushdataInInputArr(event) {
     const u = document.getElementsByClassName('multi-input')[0];
     // console.log('u\n:', u);
     const l = u.children.length;
@@ -131,12 +152,37 @@ function pushdataInInputArr(event) {
     }
     multiInputArr.push(currentParam);
     u.outerHTML = multiInputModel;
+
+    await createElement(document.getElementsByClassName('multi-input')[0], 'div', [
+        {
+            key: 'id',
+            value: 'multi-input-arr'
+        },
+        {
+            key: 'style',
+            value: 'max-width: 720px;'
+        }
+    ]);
+
+    for(let i = 0, l = multiInputArr.length; i < l; i++) {
+        let str = [];
+        for (const key in multiInputArr[i]) {
+            str.push(key + ': <span style="color: white;">' + multiInputArr[i][key] + '</span>');
+        }
+        const param = [
+            {
+                key: 'innerHTML',
+                value: str.join('<br>') + '<hr>'
+            }
+        ];
+        await createElement(document.getElementById('multi-input-arr'), 'p', param);
+    }
     // document.getElementById('add-param').onclick = pushdataInInputArr;
     event.preventDefault();
     return;
 }
 
-async function createLI(arr, parent, action) {
+async function createDiv(arr, parent, action) {
     for(let i = 0, l = arr.length; i < l; i++) {
         const param = [
             {
@@ -152,12 +198,12 @@ async function createLI(arr, parent, action) {
                 value: action
             },
             {
-                key: 'style',
-                value: 'cursor: pointer; text-decoration: underline;'
+                key: 'className',
+                value: 'purple-bg'
             }
         ];
         // console.log('create')
-        await createElement(parent, 'li', param);
+        await createElement(parent, 'div', param);
         arr[i]['id'] = arr[i].name.split(' ').join('-');
     }
     return;
@@ -228,4 +274,41 @@ async function compileAndSave() {
     } catch (error) {
         throw new Error(error);
     }
+}
+
+function hideLibs(){
+    const f = document.getElementById('libraries');
+    if (libsAreVisible) {
+        f.style.display = 'none';
+        libsAreVisible = false;
+        document.getElementById('libs-display-indicator').innerHTML = '&#10798;';
+    } else {
+        f.style.display = 'flex';
+        libsAreVisible = true;
+        document.getElementById('libs-display-indicator').innerHTML = '&#8722;';
+    }
+    return;
+}
+
+function hideTemplates(){
+    const f = document.getElementById('list-of-template');
+    console.log(templatesAreVisible)
+    if (templatesAreVisible) {
+        f.style.display = 'none';
+        templatesAreVisible = false;
+        document.getElementById('template-display-indicator').innerHTML = '&#10798;';
+    } else {
+        f.style.display = 'flex';
+        templatesAreVisible = true;
+        document.getElementById('template-display-indicator').innerHTML = '&#8722;';
+    }
+    return;
+}
+
+function exit() {
+    window.close();
+}
+
+function neww() {
+    window.open('index.html')
 }

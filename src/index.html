@@ -9,15 +9,15 @@
         <script src="./js/index.js"></script>
     </head>
     <body>
-        <button onclick="exit()">LEAVE</button>
-        <button onclick="neww()">New</button>
+        <!-- <button onclick="exit()">LEAVE</button>
+        <button onclick="neww()">New</button> -->
         <div class="container">
             <h2 onclick="hideLibs()" style="cursor: pointer;">Libraries <span id="libs-display-indicator">&#8722;</span></h2>
             <div class="d-flex" id="libraries">
 
             </div>
         </div>
-        <div class="container">
+        <div class="container" id="template-container">
             <h2 onclick="hideTemplates()" style="cursor: pointer;">Templates <span id="template-display-indicator">&#10798;</span></h2>
             <div class="d-flex" id="list-of-template">
     
@@ -25,7 +25,7 @@
 
         </div>
 
-        <div class="container">
+        <div class="container" id="form-container">
             <h2>Form:</h2>
             <div id="template-form">
                 
@@ -35,7 +35,7 @@
             <button onclick="compileAndSave()">DoIt</button>
         </div>
 
-        <div class="container">
+        <div class="container" id="collect-container">
             <h2>Collect:</h2>
             <ul id="result">
     

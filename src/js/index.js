@@ -82,6 +82,7 @@ async function createElement(parent, element, arrayOfParams) {
 }
 
 async function getTemplatesFrom(el) {
+    isLoading();
     hideLibs();
     allTemplates = [];
     const t = PARAMS.libs.filter(x => x.id === el.target.id);
@@ -98,10 +99,13 @@ async function getTemplatesFrom(el) {
         return;
     } catch (error) {
         throw new Error(error);
+    } finally {
+        isLoading();
     }
 }
 
 async function getTemplate(el) {
+    isLoading();
     const t = allTemplates.filter(x => x.id === el.target.id)[0];
     try {
         selectedForm = await invoicejs.getForm(selectedLib.url, t.name);
@@ -116,11 +120,13 @@ async function getTemplate(el) {
         document.getElementById('form-body').className += ' grid';
         getInputArr();
         hideTemplates();
+        return;
     } catch (error) {
         throw new Error(error);
+    } finally {
+        isLoading();
     }
 
-    return;
 }
 
 function getInputArr() {
@@ -265,6 +271,7 @@ async function getResponse(data) {
 }
 
 async function compileAndSave() {
+    isLoading();
     try {
         const err = [];
         if (data.length === 0) err.push('No data entry.');
@@ -282,6 +289,8 @@ async function compileAndSave() {
         document.getElementById('form-container').style.display = 'none';
     } catch (error) {
         throw new Error(error);
+    } finally {
+        isLoading();
     }
 }
 
@@ -312,6 +321,15 @@ function hideTemplates(){
         document.getElementById('template-display-indicator').innerHTML = '&#8722;';
     }
     return;
+}
+
+function isLoading(){
+    const load = document.getElementById('loading-container');
+    if(load.style.display === 'block') {
+        load.style.display = 'none';
+    } else {
+        load.style.display = 'block';
+    }
 }
 
 function exit() {

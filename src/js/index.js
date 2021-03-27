@@ -13,9 +13,9 @@ const PARAMS = {
             url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
         },
         {
-            name: 'A-lib',
-            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
-            url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
+            name: 'Dev-lib',
+            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/dev',
+            url: 'https://github.com/SofianD/invoiceJS-lib/tree/dev/lib'
         },
         {
             name: 'Z-liba',
@@ -87,17 +87,18 @@ async function getTemplatesFrom(el) {
     const t = PARAMS.libs.filter(x => x.id === el.target.id);
     try {
         allTemplates = await invoicejs.getListOfTemplates(t[0].url_api);
-    } catch (error) {
-        console.log(error);
+        document.getElementById('template-container').style.display = 'block';
+
+        selectedLib = t[0];
+        const a = document.getElementById('list-of-template');
+        a.innerHTML = '';
+        await createDiv(allTemplates, a, getTemplate);
+        templatesAreVisible = false;
+        hideTemplates();
         return;
+    } catch (error) {
+        throw new Error(error);
     }
-    selectedLib = t[0];
-    const a = document.getElementById('list-of-template');
-    a.innerHTML = '';
-    await createDiv(allTemplates, a, getTemplate);
-    templatesAreVisible = false;
-    hideTemplates();
-    return;
 }
 
 async function getTemplate(el) {
@@ -105,18 +106,18 @@ async function getTemplate(el) {
     try {
         selectedForm = await invoicejs.getForm(selectedLib.url, t.name);
         selectedTemplate = await invoicejs.getTemplate(selectedLib.url, t.name);
+        document.getElementById('form-container').style.display = 'block';
         const f = document.getElementById('template-form');
         // console.log(selectedForm);
         // console.log(selectedTemplate);
-        f.outerHTML = selectedForm;
+        f.innerHTML = selectedForm;
         selectedForm = document.getElementById('myForm');
         selectedForm.onsubmit = pushFormData;
         document.getElementById('form-body').className += ' grid';
         getInputArr();
         hideTemplates();
     } catch (error) {
-        console.log(error);
-        return;
+        throw new Error(error);
     }
 
     return;
@@ -133,7 +134,8 @@ function getInputArr() {
     document.getElementById('add-param').onclick = pushdataInInputArr;
 }
 
-async function pushdataInInputArr(event) {
+function pushdataInInputArr(event) {
+    event.preventDefault();
     const u = document.getElementsByClassName('multi-input')[0];
     // console.log('u\n:', u);
     const l = u.children.length;
@@ -142,18 +144,19 @@ async function pushdataInInputArr(event) {
         const m = u.children[i].children.length;
         for(let n = 0; n < m; n++) {
             if(u.children[i].children[n].nodeName === 'INPUT') {
-                // currentArr.push({
-                //     name: u.children[i].children[n].name,
-                //     value: u.children[i].children[n].value
-                // });
+                if (u.children[i].children[n].value.length === 0) {
+                    // event.preventDefault();
+                    throw new Error(`${u.children[i].children[n].name.toUpperCase()} need value.`);
+                }
                 currentParam[u.children[i].children[n].name] = u.children[i].children[n].value;
             }
         }
     }
+
     multiInputArr.push(currentParam);
     u.outerHTML = multiInputModel;
 
-    await createElement(document.getElementsByClassName('multi-input')[0], 'div', [
+    createElement(document.getElementsByClassName('multi-input')[0], 'div', [
         {
             key: 'id',
             value: 'multi-input-arr'
@@ -175,10 +178,10 @@ async function pushdataInInputArr(event) {
                 value: str.join('<br>') + '<hr>'
             }
         ];
-        await createElement(document.getElementById('multi-input-arr'), 'p', param);
+        createElement(document.getElementById('multi-input-arr'), 'p', param);
     }
     // document.getElementById('add-param').onclick = pushdataInInputArr;
-    event.preventDefault();
+    // event.preventDefault();
     return;
 }
 
@@ -210,7 +213,7 @@ async function createDiv(arr, parent, action) {
 }
 
 function pushFormData(event) {
-    // const selectedForm = document.getElementById('myForm');
+    event.preventDefault();
     const u = document.getElementsByClassName('multi-input')[0];
     const formData = {};
 
@@ -232,15 +235,13 @@ function pushFormData(event) {
 
     data.push(formData);
     selectedForm.reset();
-    console.log(data);
     u.outerHTML = multiInputModel;
-    event.preventDefault();
     return;
 }
 
 async function getResponse(data) {
     const h = document.getElementById('result');
-    
+    document.getElementById('collect-container').style.display = 'block';
     for(let i = 0, dl = data.length; i < dl; i++) {
         const param = [
             {
@@ -249,7 +250,7 @@ async function getResponse(data) {
             },
             {
                 key: 'innerHTML',
-                value: '<a target="_blank" href="'+ data[i].pathOfsavedFile +'">'+ data[i].name +'</a>'
+                value: '<a target="_blank" href="file:///'+ data[i].pathOfsavedFile +'">'+ data[i].name +'</a>'
             },
             {
                 key: 'style',
@@ -265,12 +266,20 @@ async function getResponse(data) {
 
 async function compileAndSave() {
     try {
+        const err = [];
+        if (data.length === 0) err.push('No data entry.');
+        if (typeof selectedTemplate !== 'string') err.push('No template.');
+        if (err.length > 0) throw err.join('\n');
+
         const response =  await invoicejs.getAndSaveInvoice(selectedTemplate, data, {
             toSaveFiles: PARAMS.path.toSaveFiles
         });
         // console.log(response);
-        data = [];
         getResponse(response);
+        data = [];
+        selectedForm = undefined;
+        selectedTemplate = undefined;
+        document.getElementById('form-container').style.display = 'none';
     } catch (error) {
         throw new Error(error);
     }

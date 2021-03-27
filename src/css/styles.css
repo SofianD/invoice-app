@@ -53,6 +53,9 @@ input, button {
     /* border-radius: 10px; */
     padding: 5px 15px;
     margin: 25px 25px;
+    border: 1px solid grey;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.055);
 }
 
 .d-flex {
@@ -92,4 +95,10 @@ input, button {
 .row {
     display: flex;
     flex-direction: column;
+}
+
+#form-container,
+#collect-container,
+#template-container {
+    display: none;
 }

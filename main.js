@@ -5,6 +5,7 @@ function createWindow () {
         width: 800,
         height: 600,
         frame: true,
+        autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,
             allowRunningInsecureContent: true,

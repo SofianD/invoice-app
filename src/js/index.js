@@ -11,6 +11,16 @@ const PARAMS = {
             name: 'invoiceJS-lib',
             url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
             url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
+        },
+        {
+            name: 'Dev-lib',
+            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/dev',
+            url: 'https://github.com/SofianD/invoiceJS-lib/tree/dev/lib'
+        },
+        {
+            name: 'Z-liba',
+            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
+            url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
         }
     ]
 };
@@ -20,7 +30,14 @@ let selectedTemplate, selectedForm, multiInputModel, nameOfMultiInput;
 let multiInputArr = [];
 let selectedLib;
 
+//  view
+let libsAreVisible = true;
+let templatesAreVisible = false;
+
 window.onload = async function() {
+
+    PARAMS.libs = PARAMS.libs.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
+
     // console.log(app)
     // app.ipcRenderer.postMessage()
     const ulLib = document.getElementById('libraries');
@@ -43,11 +60,11 @@ window.onload = async function() {
                 value: getTemplatesFrom
             },
             {
-                key: 'style',
-                value: 'cursor: pointer; text-decoration: underline;'
+                key: 'className',
+                value: 'purple-bg'
             }
         ]
-        await createElement(ulLib, 'li', param);
+        await createElement(ulLib, 'div', param);
         PARAMS.libs[i]['id'] = PARAMS.libs[i].name.split(' ').join('-');
     }
 }
@@ -65,40 +82,51 @@ async function createElement(parent, element, arrayOfParams) {
 }
 
 async function getTemplatesFrom(el) {
+    isLoading();
+    hideLibs();
     allTemplates = [];
     const t = PARAMS.libs.filter(x => x.id === el.target.id);
     try {
         allTemplates = await invoicejs.getListOfTemplates(t[0].url_api);
-    } catch (error) {
-        console.log(error);
-        return;
-    }
-    selectedLib = t[0];
-    const a = document.getElementById('list-of-template');
-    a.innerHTML = '';
-    await createLI(allTemplates, a, getTemplate);
+        document.getElementById('template-container').style.display = 'block';
 
-    return;
+        selectedLib = t[0];
+        const a = document.getElementById('list-of-template');
+        a.innerHTML = '';
+        await createDiv(allTemplates, a, getTemplate);
+        templatesAreVisible = false;
+        hideTemplates();
+        return;
+    } catch (error) {
+        throw new Error(error);
+    } finally {
+        isLoading();
+    }
 }
 
 async function getTemplate(el) {
+    isLoading();
     const t = allTemplates.filter(x => x.id === el.target.id)[0];
     try {
         selectedForm = await invoicejs.getForm(selectedLib.url, t.name);
         selectedTemplate = await invoicejs.getTemplate(selectedLib.url, t.name);
+        document.getElementById('form-container').style.display = 'block';
         const f = document.getElementById('template-form');
         // console.log(selectedForm);
         // console.log(selectedTemplate);
         f.innerHTML = selectedForm;
         selectedForm = document.getElementById('myForm');
         selectedForm.onsubmit = pushFormData;
+        document.getElementById('form-body').className += ' grid';
         getInputArr();
-    } catch (error) {
-        console.log(error);
+        hideTemplates();
         return;
+    } catch (error) {
+        throw new Error(error);
+    } finally {
+        isLoading();
     }
 
-    return;
 }
 
 function getInputArr() {
@@ -113,6 +141,7 @@ function getInputArr() {
 }
 
 function pushdataInInputArr(event) {
+    event.preventDefault();
     const u = document.getElementsByClassName('multi-input')[0];
     // console.log('u\n:', u);
     const l = u.children.length;
@@ -121,22 +150,48 @@ function pushdataInInputArr(event) {
         const m = u.children[i].children.length;
         for(let n = 0; n < m; n++) {
             if(u.children[i].children[n].nodeName === 'INPUT') {
-                // currentArr.push({
-                //     name: u.children[i].children[n].name,
-                //     value: u.children[i].children[n].value
-                // });
+                if (u.children[i].children[n].value.length === 0) {
+                    // event.preventDefault();
+                    throw new Error(`${u.children[i].children[n].name.toUpperCase()} need value.`);
+                }
                 currentParam[u.children[i].children[n].name] = u.children[i].children[n].value;
             }
         }
     }
+
     multiInputArr.push(currentParam);
     u.outerHTML = multiInputModel;
+
+    createElement(document.getElementsByClassName('multi-input')[0], 'div', [
+        {
+            key: 'id',
+            value: 'multi-input-arr'
+        },
+        {
+            key: 'style',
+            value: 'max-width: 720px;'
+        }
+    ]);
+
+    for(let i = 0, l = multiInputArr.length; i < l; i++) {
+        let str = [];
+        for (const key in multiInputArr[i]) {
+            str.push(key + ': <span style="color: white;">' + multiInputArr[i][key] + '</span>');
+        }
+        const param = [
+            {
+                key: 'innerHTML',
+                value: str.join('<br>') + '<hr>'
+            }
+        ];
+        createElement(document.getElementById('multi-input-arr'), 'p', param);
+    }
     // document.getElementById('add-param').onclick = pushdataInInputArr;
-    event.preventDefault();
+    // event.preventDefault();
     return;
 }
 
-async function createLI(arr, parent, action) {
+async function createDiv(arr, parent, action) {
     for(let i = 0, l = arr.length; i < l; i++) {
         const param = [
             {
@@ -152,19 +207,19 @@ async function createLI(arr, parent, action) {
                 value: action
             },
             {
-                key: 'style',
-                value: 'cursor: pointer; text-decoration: underline;'
+                key: 'className',
+                value: 'purple-bg'
             }
         ];
         // console.log('create')
-        await createElement(parent, 'li', param);
+        await createElement(parent, 'div', param);
         arr[i]['id'] = arr[i].name.split(' ').join('-');
     }
     return;
 }
 
 function pushFormData(event) {
-    // const selectedForm = document.getElementById('myForm');
+    event.preventDefault();
     const u = document.getElementsByClassName('multi-input')[0];
     const formData = {};
 
@@ -186,15 +241,13 @@ function pushFormData(event) {
 
     data.push(formData);
     selectedForm.reset();
-    console.log(data);
     u.outerHTML = multiInputModel;
-    event.preventDefault();
     return;
 }
 
 async function getResponse(data) {
     const h = document.getElementById('result');
-    
+    document.getElementById('collect-container').style.display = 'block';
     for(let i = 0, dl = data.length; i < dl; i++) {
         const param = [
             {
@@ -203,7 +256,7 @@ async function getResponse(data) {
             },
             {
                 key: 'innerHTML',
-                value: '<a target="_blank" href="'+ data[i].pathOfsavedFile +'">'+ data[i].name +'</a>'
+                value: '<a target="_blank" href="file:///'+ data[i].pathOfsavedFile +'">'+ data[i].name +'</a>'
             },
             {
                 key: 'style',
@@ -218,14 +271,71 @@ async function getResponse(data) {
 }
 
 async function compileAndSave() {
+    isLoading();
     try {
+        const err = [];
+        if (data.length === 0) err.push('No data entry.');
+        if (typeof selectedTemplate !== 'string') err.push('No template.');
+        if (err.length > 0) throw err.join('\n');
+
         const response =  await invoicejs.getAndSaveInvoice(selectedTemplate, data, {
             toSaveFiles: PARAMS.path.toSaveFiles
         });
         // console.log(response);
-        data = [];
         getResponse(response);
+        data = [];
+        selectedForm = undefined;
+        selectedTemplate = undefined;
+        document.getElementById('form-container').style.display = 'none';
     } catch (error) {
         throw new Error(error);
+    } finally {
+        isLoading();
     }
+}
+
+function hideLibs(){
+    const f = document.getElementById('libraries');
+    if (libsAreVisible) {
+        f.style.display = 'none';
+        libsAreVisible = false;
+        document.getElementById('libs-display-indicator').innerHTML = '&#10798;';
+    } else {
+        f.style.display = 'flex';
+        libsAreVisible = true;
+        document.getElementById('libs-display-indicator').innerHTML = '&#8722;';
+    }
+    return;
+}
+
+function hideTemplates(){
+    const f = document.getElementById('list-of-template');
+    console.log(templatesAreVisible)
+    if (templatesAreVisible) {
+        f.style.display = 'none';
+        templatesAreVisible = false;
+        document.getElementById('template-display-indicator').innerHTML = '&#10798;';
+    } else {
+        f.style.display = 'flex';
+        templatesAreVisible = true;
+        document.getElementById('template-display-indicator').innerHTML = '&#8722;';
+    }
+    return;
+}
+
+function isLoading(){
+    const load = document.getElementById('loading-container');
+    if(load.style.display === 'block') {
+        load.style.display = 'none';
+    } else {
+        load.style.display = 'block';
+    }
+}
+
+function exit() {
+    window.close();
+}
+
+function neww() {
+    window.open('index.html')
 }

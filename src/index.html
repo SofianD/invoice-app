@@ -9,33 +9,38 @@
         <script src="./js/index.js"></script>
     </head>
     <body>
-        <h1>My Invoice</h1>
+        <!-- <button onclick="exit()">LEAVE</button>
+        <button onclick="neww()">New</button> -->
+        <div class="container">
+            <h2 onclick="hideLibs()" style="cursor: pointer;">Libraries <span id="libs-display-indicator">&#8722;</span></h2>
+            <div class="d-flex" id="libraries">
 
-        <h2>Libraries:</h2>
-        <ul id="libraries">
+            </div>
+        </div>
+        <div class="container" id="template-container">
+            <h2 onclick="hideTemplates()" style="cursor: pointer;">Templates <span id="template-display-indicator">&#10798;</span></h2>
+            <div class="d-flex" id="list-of-template">
+    
+            </div>
 
-        </ul>
-
-        <hr>
-
-        <h2>Templates:</h2>
-        <ul id="list-of-template">
-
-        </ul>
-
-        <hr>
-
-        <h2>Form:</h2>
-        <div id="template-form">
-            
         </div>
 
-        <h3>Get invoices:</h3>
-        <button onclick="compileAndSave()">DoIt</button>
+        <div class="container" id="form-container">
+            <h2>Form:</h2>
+            <div id="template-form">
+                
+            </div>
+    
+            <hr>
+            <button onclick="compileAndSave()">DoIt</button>
+        </div>
 
-        <h2>Collect:</h2>
-        <ul id="result">
-
-        </ul>
+        <div class="container" id="collect-container">
+            <h2>Collect:</h2>
+            <ul id="result">
+    
+            </ul>
+        </div>
+        <div id="loading-container"><p>Loading...</p></div>
     </body>
 </html>

@@ -2,6 +2,16 @@ const invoicejs = require('@sofiand/invoice');
 // const app = require('electron')
 
 const PARAMS = {
+    me: {
+        name: 'Doo Sofian',
+        adress: '41 rue Docteur Dewyn',
+        codepostal: '59200',
+        city: 'Lille',
+        phone: '0320000000',
+        mobile: '0600000000',
+        siret: 'Siret 362 521 879 00034',
+        ape: 'Code APE 0000 C - N* TVA Intracom.FR 84 830 000 000'
+    },
     path: {
         toGetFiles: '',
         toSaveFiles: 'C:/Users/Sofian/Documents/MyPDF/'
@@ -16,11 +26,6 @@ const PARAMS = {
             name: 'Dev-lib',
             url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/dev',
             url: 'https://github.com/SofianD/invoiceJS-lib/tree/dev/lib'
-        },
-        {
-            name: 'Z-liba',
-            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
-            url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
         }
     ]
 };
@@ -37,8 +42,6 @@ let templatesAreVisible = false;
 window.onload = async function() {
 
     PARAMS.libs = PARAMS.libs.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
-
-    // console.log(app)
     // app.ipcRenderer.postMessage()
     const ulLib = document.getElementById('libraries');
     for(let i = 0, l = PARAMS.libs.length; i < l; i++) {
@@ -112,14 +115,13 @@ async function getTemplate(el) {
         selectedTemplate = await invoicejs.getTemplate(selectedLib.url, t.name);
         document.getElementById('form-container').style.display = 'block';
         const f = document.getElementById('template-form');
-        // console.log(selectedForm);
-        // console.log(selectedTemplate);
         f.innerHTML = selectedForm;
         selectedForm = document.getElementById('myForm');
         selectedForm.onsubmit = pushFormData;
         document.getElementById('form-body').className += ' grid';
         getInputArr();
         hideTemplates();
+        autocompleteForm();
         return;
     } catch (error) {
         throw new Error(error);
@@ -143,7 +145,6 @@ function getInputArr() {
 function pushdataInInputArr(event) {
     event.preventDefault();
     const u = document.getElementsByClassName('multi-input')[0];
-    // console.log('u\n:', u);
     const l = u.children.length;
     let currentParam = {};
     for(let i= 0; i < l; i++) {
@@ -211,7 +212,6 @@ async function createDiv(arr, parent, action) {
                 value: 'purple-bg'
             }
         ];
-        // console.log('create')
         await createElement(parent, 'div', param);
         arr[i]['id'] = arr[i].name.split(' ').join('-');
     }
@@ -224,13 +224,11 @@ function pushFormData(event) {
     const formData = {};
 
     if(u) {
-        // console.log('inputModel: ', u);
         u.innerHTML = '';
         formData[nameOfMultiInput] = multiInputArr;
         multiInputArr = [];
     }
     const inputElmnts = ([...selectedForm.elements].flat()).filter(x => x.nodeName === 'INPUT');
-    // console.log(inputElmnts)
     for(let i = 0, l = inputElmnts.length; i < l - 1; i++) {
         const c = {
             key: inputElmnts[i].name,
@@ -242,6 +240,7 @@ function pushFormData(event) {
     data.push(formData);
     selectedForm.reset();
     u.outerHTML = multiInputModel;
+    autocompleteForm();
     return;
 }
 
@@ -281,7 +280,6 @@ async function compileAndSave() {
         const response =  await invoicejs.getAndSaveInvoice(selectedTemplate, data, {
             toSaveFiles: PARAMS.path.toSaveFiles
         });
-        // console.log(response);
         getResponse(response);
         data = [];
         selectedForm = undefined;
@@ -294,6 +292,40 @@ async function compileAndSave() {
     }
 }
 
+function autocompleteForm() {
+    const inputElmnts = ([...selectedForm.elements].flat()).filter(x => x.nodeName === 'INPUT');
+    for(let i = 0, l = inputElmnts.length; i < l - 1; i++) {
+        let check = inputElmnts[i].id.split('-');
+        if (check.length > 1) {
+            let currentStage = {...PARAMS};
+            let dataFound = false;
+            let j = 0;
+            let err = false;
+            while (!dataFound && j < check.length && !err) {
+                if (check[j] in currentStage) {
+                    if (j === check.length - 1) {
+                        dataFound = true;
+                        currentStage = currentStage[check[j]];
+                    } else {
+                        currentStage = {...currentStage[check[j]]};
+                        j++;
+                    }
+                } else {
+                    err = true;
+                }
+            }
+
+            if (dataFound) {
+                inputElmnts[i].value = currentStage;
+                check = 'me' + (check[1].charAt(0).toUpperCase()) + (check[1].substr(1));
+                inputElmnts[i].name = check;
+            }
+        }
+    }
+}
+
+
+//  VIEW
 function hideLibs(){
     const f = document.getElementById('libraries');
     if (libsAreVisible) {
@@ -310,7 +342,6 @@ function hideLibs(){
 
 function hideTemplates(){
     const f = document.getElementById('list-of-template');
-    console.log(templatesAreVisible)
     if (templatesAreVisible) {
         f.style.display = 'none';
         templatesAreVisible = false;

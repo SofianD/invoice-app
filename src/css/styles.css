@@ -27,7 +27,7 @@
 }
 
 body {
-    background-color: rgba(27, 27, 27, 0.938);
+    background-color: rgba(27, 27, 27, 0.39);
     min-height: 480px;
     min-width: 280px;
     font-family: "Dosis", sans-serif;
@@ -55,7 +55,7 @@ input, button {
     margin: 25px auto;
     border: 1px solid grey;
     border-radius: 2px;
-    background-color: rgba(255, 255, 255, 0.055);
+    background-color: rgba(255, 255, 255, 0.37);
     max-width: 960px;
 }
 

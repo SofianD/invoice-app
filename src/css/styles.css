@@ -59,6 +59,22 @@ input, button {
     max-width: 960px;
 }
 
+.m-15 {
+    margin: 15px;
+}
+
+.m-15-30 {
+    margin: 50px 15px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.txt-center {
+    text-align: center;
+}
+
 .d-flex {
     display: flex;
     flex-direction: column;
@@ -79,6 +95,19 @@ input, button {
     background: -moz-linear-gradient(180deg, rgb(111, 0, 255) 0%, rgba(136,0,254,1) 74%);
     background: -webkit-linear-gradient(180deg, rgba(111, 0, 255) 0%, rgba(136,0,254,1) 74%);
     background: linear-gradient(180deg, rgba(111, 0, 255) 0%, rgba(136,0,254,1) 74%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6200ff",endColorstr="#8800fe",GradientType=1);
+    color: white;
+    box-shadow: 0 5px 10px 2px #0000004d;
+    border-radius: 3px;
+    border: solid white 1px;
+    font-weight: bold;
+}
+
+.red-bg {
+    background: rgb(255, 0, 0);
+    background: -moz-linear-gradient(180deg, rgb(255, 0, 0) 0%, rgb(92, 0, 0) 74%);
+    background: -webkit-linear-gradient(180deg, rgb(255, 0, 0) 0%, rgb(92, 0, 0) 74%);
+    background: linear-gradient(180deg, rgb(255, 0, 0) 0%, rgb(92, 0, 0) 74%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6200ff",endColorstr="#8800fe",GradientType=1);
     color: white;
     box-shadow: 0 5px 10px 2px #0000004d;

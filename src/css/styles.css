@@ -27,7 +27,7 @@
 }
 
 body {
-    background-color: rgba(27, 27, 27, 0.39);
+    background-color: rgba(27, 27, 27, 0.1);
     min-height: 480px;
     min-width: 280px;
     font-family: "Dosis", sans-serif;
@@ -53,7 +53,7 @@ input, button {
     /* border-radius: 10px; */
     padding: 5px 15px;
     margin: 25px auto;
-    border: 1px solid grey;
+    /* border: 1px solid grey; */
     border-radius: 2px;
     background-color: rgba(255, 255, 255, 0.37);
     max-width: 960px;
@@ -117,6 +117,7 @@ input, button {
     box-shadow: 0 5px 10px 2px #0000004d;
     border-radius: 3px;
     border: solid white 1px;
+    font-weight: bold;
 }
 
 .grid {

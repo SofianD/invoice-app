@@ -1,6 +1,10 @@
 const fs = require('fs/promises');
 const {resolve} = require('path');
 
+/**
+ * @param {string} path 
+ * @returns {boolean}
+ */
 exports.fileExist = async (path) => {
     path = resolve(path);
     try {
@@ -18,6 +22,10 @@ exports.fileExist = async (path) => {
     }
 }
 
+/**
+ * @param {string} path 
+ * @returns {boolean}
+ */
 exports.delete = async (path) => {
     path = resolve(path);
     try {
@@ -28,6 +36,12 @@ exports.delete = async (path) => {
     }
 }
 
+/**
+ * 
+ * @param {string} path 
+ * @param {string | Buffer} data
+ * @returns {undefined | Error}
+ */
 exports.append = async (path, data) => {
     path = resolve(path);
     try {
@@ -41,6 +55,12 @@ exports.append = async (path, data) => {
     }
 }
 
+/**
+ * 
+ * @param {string} path 
+ * @param {string | Buffer} data 
+ * @returns {undefined | Error}
+ */
 exports.overwrite = async (path, data) => {
     path = resolve(path);
     try {

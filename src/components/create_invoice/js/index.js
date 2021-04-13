@@ -1,33 +1,10 @@
 const invoicejs = require('@sofiand/invoice');
 // const app = require('electron')
-
+const path = require('path');
+// const PARAMS = require(path.resolve('backup.json'));
 const PARAMS = {
-    me: {
-        name: 'Doo Sofian',
-        adress: '41 rue Docteur Dewyn',
-        codepostal: '59200',
-        city: 'Lille',
-        phone: '0320000000',
-        mobile: '0600000000',
-        siret: 'Siret 362 521 879 00034',
-        ape: 'Code APE 0000 C - N* TVA Intracom.FR 84 830 000 000'
-    },
-    path: {
-        toGetFiles: '',
-        toSaveFiles: 'C:/Users/Sofian/Documents/MyPDF/'
-    },
-    libs: [
-        {
-            name: 'invoiceJS-lib',
-            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/master',
-            url: 'https://github.com/SofianD/invoiceJS-lib/tree/master/lib'
-        },
-        {
-            name: 'Dev-lib',
-            url_api: 'https://api.github.com/repos/SofianD/invoicejs-lib/git/trees/dev',
-            url: 'https://github.com/SofianD/invoiceJS-lib/tree/dev/lib'
-        }
-    ]
+    me: require(path.resolve('user.json')),
+    ...require(path.resolve('params.json'))
 };
 let allTemplates = [];
 let data = [];
@@ -40,7 +17,6 @@ let libsAreVisible = true;
 let templatesAreVisible = false;
 
 window.onload = async function() {
-
     PARAMS.libs = PARAMS.libs.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
     // app.ipcRenderer.postMessage()
     const ulLib = document.getElementById('libraries');

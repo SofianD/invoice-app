@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron');
 
 function createWindow () {
     const win = new BrowserWindow({
@@ -15,7 +15,7 @@ function createWindow () {
     });
 
     win.loadFile('src/home.html');
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
 };
 
 app.whenReady().then(createWindow);
@@ -33,4 +33,17 @@ app.on('activate', () => {
     }
 });
 
-console.log(process.platform);
+ipcMain.on('main', (event, data) => {
+    if (data.to === 'main') {
+        console.log(data);
+    } else {
+        sendData(data);
+    }
+})
+
+function sendData(data) {
+    const wins = BrowserWindow.getAllWindows().filter(x => x.isVisible());
+    for (w of wins) {
+        w.webContents.send(data.to, data);
+    }
+}

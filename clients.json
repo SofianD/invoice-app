@@ -1,0 +1,32 @@
+{
+    "clients": [
+        {
+            "name": "Pierre Demdem",
+            "address": "30 rue Prèsdunarbre",
+            "city": "Lille",
+            "codepostal": "59000",
+            "phone": "0689568954"
+        },
+        {
+            "name": "Nico Halhal",
+            "address": "30 rue Prèsdunmur",
+            "city": "Paris",
+            "codepostal": "59000",
+            "phone": "0660233212"
+        },
+        {
+            "name": "Jean Dupdup",
+            "address": "38 rue Prèsdunarbreblanc",
+            "city": "Lille",
+            "codepostal": "59990",
+            "phone": "0666668954"
+        },
+        {
+            "name": "Alain Deldel",
+            "address": "23 rue Prèsdunarbrevert",
+            "city": "Lille",
+            "codepostal": "59990",
+            "phone": "0666668954"
+        }
+    ]
+}

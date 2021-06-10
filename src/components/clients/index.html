@@ -10,9 +10,16 @@
     </head>
     <body>
         <h1>CLIENTS</h1>
+        <div class="container txt-center">
+            <div class="purple-bg pointer m-15" onclick="newClient()">
+                <p>New client</p>
+            </div>
+            <div class="red-bg pointer m-15" onclick="save()">
+                <p>Save</p>
+            </div>
+        </div>
         <div class="container">
-            <button onclick="save()">Save</button>
-            <button onclick="newClient()">New client</button>
+            <label for="search-bar">Search: </label><input type="text" id="search-bar" onkeyup="searchClient()">
         </div>
         <div class="container" id="clients">
         </div>

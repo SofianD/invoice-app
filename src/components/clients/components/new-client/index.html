@@ -7,15 +7,23 @@
         <meta name="author" content="https://github.com/SofianD">
         <link rel="stylesheet" href="../../../../css/styles.css">
         <script src="./js/index.js"></script>
+        <style>
+            body {
+                background-color: none;
+            }
+        </style>
     </head>
     <body>
-        <h1>New client</h1>
+        <div style="background-color: white; border-radius: 10px; border: solid;">
+            <h1 style="margin: 0 auto;">New client</h1>
 
-        <div class="container">
-            <button onclick="addClient()">Send</button>
-        </div>
+            <div class="container">
+                <button onclick="addClient()">Send</button>
+                <button onclick="window.close()">Close</button>
+            </div>
 
-        <div class="container" id="client">
+            <div class="container" id="client">
+            </div>
         </div>
     </body>
 </html>

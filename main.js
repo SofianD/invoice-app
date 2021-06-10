@@ -2,10 +2,15 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 
 function createWindow () {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        frame: true,
+        width: 400,
+        height: 518,
+        frame: false,
+        transparent: true,
         autoHideMenuBar: true,
+        minWidth: 400,
+        minHeight:518,
+        maxWidth: 400,
+        maxHeight: 518,
         webPreferences: {
             nodeIntegration: true,
             allowRunningInsecureContent: true,
@@ -15,7 +20,11 @@ function createWindow () {
     });
 
     win.loadFile('src/home.html');
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
+
+    win.once('ready-to-show', () => {
+        win.show()
+    })
 };
 
 app.whenReady().then(createWindow);
@@ -33,11 +42,12 @@ app.on('activate', () => {
     }
 });
 
-ipcMain.on('main', (event, data) => {
-    if (data.to === 'main') {
-        console.log(data);
+ipcMain.on('main', (event, msg) => {
+    if (msg.to === 'main') {
+        console.log(msg);
+        console.log(event);
     } else {
-        sendData(data);
+        sendData(msg);
     }
 })
 
@@ -47,3 +57,31 @@ function sendData(data) {
         w.webContents.send(data.to, data);
     }
 }
+
+const allWin = []
+
+
+ipcMain.on('new-window', (event, msg) => {
+    // console.log(event)
+    // console.log(msg)
+    if (allWin.filter(page => page.name === msg).length === 0) {
+        const wins = BrowserWindow.getAllWindows().filter(x => x.webContents.getTitle() === msg)[0];
+        allWin.push({
+            name: msg,
+            window: wins
+        });
+        console.log('add')
+    } else {
+        event.sender.destroy();
+        console.log('destroy')
+    }
+    console.log(allWin)
+})
+
+ipcMain.on('close-window', (event, msg) => {
+    // console.log(event)
+    console.log(msg)
+    const index = allWin.indexOf(msg);
+    allWin.splice(index, 1);
+    console.log(allWin)
+})

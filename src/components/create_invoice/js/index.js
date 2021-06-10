@@ -1,6 +1,9 @@
 const invoicejs = require('@sofiand/invoice');
 // const app = require('electron')
 const path = require('path');
+const { ipcRenderer } = require('electron');
+const {setCloseEvent, newWindow} = require(path.resolve('src/js/shared/process/process'));
+
 // const PARAMS = require(path.resolve('backup.json'));
 const PARAMS = {
     me: require(path.resolve('user.json')),
@@ -17,6 +20,10 @@ let libsAreVisible = true;
 let templatesAreVisible = false;
 
 window.onload = async function() {
+    document.title = 'new-invoice';
+    setCloseEvent(window, ipcRenderer, document.title);
+    newWindow(document.title, ipcRenderer);
+    
     PARAMS.libs = PARAMS.libs.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
     // app.ipcRenderer.postMessage()
     const ulLib = document.getElementById('libraries');

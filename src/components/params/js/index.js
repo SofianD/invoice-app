@@ -3,8 +3,14 @@ const view = require(path.resolve('src/js/shared/view/view'));
 const fs = require(path.resolve('src/js/shared/fs/fs'));
 const User = require(path.resolve('user.json'));
 const PARAMS = require(path.resolve('params.json'));
+const { ipcRenderer } = require('electron');
+const {setCloseEvent, newWindow} = require(path.resolve('src/js/shared/process/process'));
+
 
 window.onload = async function () {
+    document.title = 'params';
+    setCloseEvent(window, ipcRenderer, document.title);
+    newWindow(document.title, ipcRenderer);
     displayMyInfo();
     displayPath();
 }

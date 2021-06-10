@@ -22,3 +22,34 @@ exports.send = (from, to, haveToReply, data, currentP) => {
     );
     return;
 }
+
+/**
+ * 
+ * @param {string} name 
+ * @param {ipcRenderer} currentP 
+ * @returns {void}
+ */
+exports.newWindow = (name, currentP) => {
+    currentP.send(
+        'new-window',
+        name
+    );
+    return;
+}
+
+/**
+ * 
+ * @param {Browser} window 
+ * @param {ipcRenderer} currentP 
+ * @param {string} name 
+ * @param {process} proc 
+ */
+exports.setCloseEvent = (window, currentP, name)=> {
+    window.onbeforeunload = async function (event) {
+        currentP.send(
+            'close-window',
+            name
+        );
+        process.exit();
+    }
+}

@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+const allWin = [];
 
 function createWindow () {
     const win = new BrowserWindow({
@@ -38,14 +39,11 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
-        console.log(BrowserWindow.getAllWindows());
     }
 });
 
 ipcMain.on('main', (event, msg) => {
     if (msg.to === 'main') {
-        console.log(msg);
-        console.log(event);
     } else {
         sendData(msg);
     }
@@ -58,30 +56,21 @@ function sendData(data) {
     }
 }
 
-const allWin = []
 
 
 ipcMain.on('new-window', (event, msg) => {
-    // console.log(event)
-    // console.log(msg)
     if (allWin.filter(page => page.name === msg).length === 0) {
         const wins = BrowserWindow.getAllWindows().filter(x => x.webContents.getTitle() === msg)[0];
         allWin.push({
             name: msg,
             window: wins
         });
-        console.log('add')
     } else {
         event.sender.destroy();
-        console.log('destroy')
     }
-    console.log(allWin)
 })
 
 ipcMain.on('close-window', (event, msg) => {
-    // console.log(event)
-    console.log(msg)
     const index = allWin.indexOf(msg);
     allWin.splice(index, 1);
-    console.log(allWin)
 })

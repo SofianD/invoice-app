@@ -89,7 +89,6 @@ function deleteClient(el) {
 
 async function save() {
     for (const el of document.getElementById('clients').children) {
-        console.log(el);
         if (el.nodeName === 'DIV' && el.id) {
             let obj = ClientsList.filter((x) => x.id === +el.id)[0];
             for (const child of el.children) {
@@ -111,7 +110,6 @@ async function save() {
                     })
             }, null, 4)
     );
-    console.log(res);
 }
 
 async function newClient() {
@@ -138,7 +136,6 @@ async function newClient() {
 // PROCESS
 
 ipcRenderer.on('clients', (event, msg) => {
-    console.log(msg)
     if (msg.haveToReply) {
         if (msg.from === 'new-client') {
             addClient(msg);
@@ -165,7 +162,6 @@ async function addClient(msg) {
 
 function searchClient () {
     const el = document.getElementById('search-bar');
-    console.log(el.value)
     if (el.value.length === 0) {
         for (client of ClientsList) {
             client.target.style.display = 'grid';

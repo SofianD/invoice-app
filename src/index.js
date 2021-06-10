@@ -27,7 +27,6 @@ const router = [
     }
 ];
 function createWindow (name) {
-    console.log(router)
     const page = router.filter(x => x.name === name)[0];
     const win = new BrowserWindow({
         width: 800,

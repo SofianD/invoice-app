@@ -3,7 +3,7 @@ const CLIENTS = require(resolve('clients.json')).clients;
 const viewjs = require(resolve('src/js/shared/view/view'));
 const fs = require(resolve('src/js/shared/fs/fs'));
 const {ipcRenderer} = require('electron');
-const {send, newWindow, setCloseEvent} = require(resolve('src/js/shared/process/process'))
+const {send, newWindow, setCloseEvent} = require(resolve('src/js/shared/process/process'));
 
 // STANDALONE WINDOW
 const {remote} = require('electron');
@@ -12,7 +12,7 @@ let ClientsList = [];
 
 window.onload = async function () {
     document.title = 'clients';
-    setCloseEvent(window, ipcRenderer, document.title)
+    setCloseEvent(window, ipcRenderer, document.title, ['new-client']);
     newWindow(document.title, ipcRenderer);
     displayClients(CLIENTS);
 };

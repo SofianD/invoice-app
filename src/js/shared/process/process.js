@@ -44,11 +44,14 @@ exports.newWindow = (name, currentP) => {
  * @param {string} name 
  * @param {process} proc 
  */
-exports.setCloseEvent = (window, currentP, name)=> {
+exports.setCloseEvent = (window, currentP, name, childs = [])=> {
     window.onbeforeunload = async function (event) {
         currentP.send(
             'close-window',
-            name
+            {
+                name,
+                childs
+            }
         );
         process.exit();
     }

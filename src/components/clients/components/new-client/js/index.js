@@ -1,14 +1,24 @@
 const { ipcRenderer } = require('electron');
 const {resolve} = require('path');
-const {send} = require(resolve('src/js/shared/process/process'));
+const {send, setCloseEvent, newWindow} = require(resolve('src/js/shared/process/process'));
 const viewjs = require(resolve('src/js/shared/view/view'));
 
 window.onload = async function () {
+    document.title = 'new-client';
+    setCloseEvent(window, ipcRenderer, document.title);
+    newWindow(document.title, ipcRenderer);
     displayView();
 }
 
 ipcRenderer.on('new-client', (event, arg) => {
     console.log(arg)
+    if (arg.haveToReply) {
+
+    } else {
+        if (arg.from === 'clients' && arg.data.status === 'success') {
+            window.close();
+        }
+    }
 })
 
 function addClient() {

@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const allWin = [];
+let allWin = [];
 
 function createWindow () {
     const win = new BrowserWindow({
@@ -71,6 +71,12 @@ ipcMain.on('new-window', (event, msg) => {
 })
 
 ipcMain.on('close-window', (event, msg) => {
-    const index = allWin.indexOf(msg);
-    allWin.splice(index, 1);
+    allWin = allWin.filter(page => page.name !== msg.name);
+    for (child of msg.childs) {
+        const current = allWin.filter(page => page.name === child);
+        if (current.length === 1) {
+            current[0].window.destroy();
+            allWin = allWin.filter(page => page.name !== child);
+        }
+    }
 })

@@ -51,8 +51,9 @@ ipcMain.on('main', (event, msg) => {
 
 function sendData(data) {
     const wins = BrowserWindow.getAllWindows().filter(x => x.isVisible());
-    for (w of wins) {
-        w.webContents.send(data.to, data);
+    const l = wins.length;
+    for (let i = 0; i < l; i++) {
+        wins[i].webContents.send(data.to, data);
     }
 }
 
@@ -72,11 +73,19 @@ ipcMain.on('new-window', (event, msg) => {
 
 ipcMain.on('close-window', (event, msg) => {
     allWin = allWin.filter(page => page.name !== msg.name);
-    for (child of msg.childs) {
-        const current = allWin.filter(page => page.name === child);
+    // for (child of msg.childs) {
+    //     const current = allWin.filter(page => page.name === child);
+    //     if (current.length === 1) {
+    //         current[0].window.destroy();
+    //         allWin = allWin.filter(page => page.name !== child);
+    //     }
+    // }
+    const l = msg.childs.length;
+    for (let i = 0; i < l; i++) {
+        const current = allWin.filter(page => page.name === msg.childs[i]);
         if (current.length === 1) {
             current[0].window.destroy();
-            allWin = allWin.filter(page => page.name !== child);
+            allWin = allWin.filter(page => page.name !== msg.childs[i]);
         }
     }
 })

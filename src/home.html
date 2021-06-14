@@ -1,0 +1,33 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>MyInvoice</title>
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval';" />
+        <meta name="description" content="My Invoice Application">
+        <meta name="author" content="https://github.com/SofianD">
+        <link rel="stylesheet" href="css/styles.css">
+        <script src="index.js"></script>
+        <style>
+            body {margin: 0;}
+        </style>
+    </head>
+    <body>
+        <div class="container txt-center">
+            <div class="txt-center">
+                <p style="font-size: 3rem;" class="txt-center">Invoice App</p>
+            </div>
+            <div class="purple-bg m-15 pointer" onclick="createWindow('new-invoice')">
+                <p>New invoice</p>
+            </div>
+            <div class="purple-bg m-15 pointer" onclick="createWindow('clients')">
+                <p>My Clients</p>
+            </div>
+            <div class="purple-bg m-15 pointer" onclick="createWindow('params')">
+                <p>My Params</p>
+            </div>
+            <div class="red-bg m-50 pointer" onclick="closeApp()">
+                <p>LEAVE Invoice App</p>
+            </div>
+        </div>
+    </body>
+</html>

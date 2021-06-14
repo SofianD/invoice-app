@@ -1,0 +1,46 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>MyInvoice</title>
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval';" />
+        <meta name="description" content="My Invoice Application">
+        <meta name="author" content="https://github.com/SofianD">
+        <link rel="stylesheet" href="../../css/styles.css">
+        <script src="./js/index.js"></script>
+    </head>
+    <body>
+        <!-- <button onclick="exit()">LEAVE</button>
+        <button onclick="neww()">New</button> -->
+        <div class="container">
+            <h2 onclick="hideLibs()" style="cursor: pointer;">Libraries <span id="libs-display-indicator">&#8722;</span></h2>
+            <div class="d-flex" id="libraries">
+
+            </div>
+        </div>
+        <div class="container" id="template-container">
+            <h2 onclick="hideTemplates()" style="cursor: pointer;">Templates <span id="template-display-indicator">&#10798;</span></h2>
+            <div class="d-flex" id="list-of-template">
+    
+            </div>
+
+        </div>
+
+        <div class="container" id="form-container">
+            <h2>Form:</h2>
+            <div id="template-form">
+                
+            </div>
+    
+            <hr>
+            <button onclick="compileAndSave()">DoIt</button>
+        </div>
+
+        <div class="container" id="collect-container">
+            <h2>Collect:</h2>
+            <div id="result">
+    
+            </div>
+        </div>
+        <div id="loading-container"><p>Loading...</p></div>
+    </body>
+</html>

@@ -1,4 +1,4 @@
-const fs = require('fs/promises');
+const fs = require('fs').promises;
 const {resolve} = require('path');
 
 /**
@@ -29,7 +29,7 @@ exports.fileExist = async (path) => {
 exports.delete = async (path) => {
     path = resolve(path);
     try {
-        const res = await fs.rm(data);
+        const res = await fs.rm(path);
         return res === undefined ? true : false;
     } catch (error) {
         throw new Error(error);

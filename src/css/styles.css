@@ -96,9 +96,9 @@ input, button {
 
 .purple-bg {
     background: rgb(98,0,255);
-    background: -moz-linear-gradient(180deg, rgb(111, 0, 255) 0%, rgba(136,0,254,1) 74%);
-    background: -webkit-linear-gradient(180deg, rgba(111, 0, 255) 0%, rgba(136,0,254,1) 74%);
-    background: linear-gradient(180deg, rgba(111, 0, 255) 0%, rgba(136,0,254,1) 74%);
+    background: -moz-linear-gradient(180deg, rgb(164, 95, 255) 0%, rgb(190, 116, 255) 74%);
+    background: -webkit-linear-gradient(180deg, rgba(164, 95, 255, 1) 0%, rgba(190, 116, 255,1) 74%);
+    background: linear-gradient(180deg, rgba(164, 95, 255, 1) 0%, rgba(190, 116, 255,1) 74%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6200ff",endColorstr="#8800fe",GradientType=1);
     color: white;
     box-shadow: 0 5px 10px 2px #0000004d;
@@ -118,6 +118,9 @@ input, button {
     border-radius: 3px;
     border: solid white 1px;
     font-weight: bold;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .grid {

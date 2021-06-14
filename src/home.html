@@ -6,20 +6,28 @@
         <meta name="description" content="My Invoice Application">
         <meta name="author" content="https://github.com/SofianD">
         <link rel="stylesheet" href="css/styles.css">
+        <script src="index.js"></script>
+        <style>
+            body {margin: 0;}
+        </style>
     </head>
     <body>
-        <div class="txt-center">
-            <p style="font-size: 8em;" class="txt-center">Invoice App</p>
-        </div>
         <div class="container txt-center">
-            <div class="purple-bg m-15 pointer" onclick="window.open('components/create_invoice/index.html')">
+            <div class="txt-center">
+                <p style="font-size: 3rem;" class="txt-center">Invoice App</p>
+            </div>
+            <div class="purple-bg m-15 pointer" onclick="createWindow('new-invoice')">
                 <p>New invoice</p>
             </div>
-            <div class="purple-bg m-15 pointer" onclick="window.open('components/params/index.html')">
+            <div class="purple-bg m-15 pointer" onclick="createWindow('clients')">
+                <p>My Clients</p>
+            </div>
+            <div class="purple-bg m-15 pointer" onclick="createWindow('params')">
                 <p>My Params</p>
             </div>
-            <div class="red-bg m-50 pointer" onclick="window.close()">
+            <div class="red-bg m-50 pointer" onclick="closeApp()">
                 <p>LEAVE Invoice App</p>
             </div>
         </div>
+    </body>
 </html>

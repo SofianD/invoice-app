@@ -1,11 +1,19 @@
 const invoicejs = require('@sofiand/invoice');
 // const app = require('electron')
 const path = require('path');
+const { ipcRenderer } = require('electron');
+const { exec } = require('child_process');
+const {setCloseEvent, newWindow} = require(path.resolve('resources/app/src/js/shared/process/process'));
+
 // const PARAMS = require(path.resolve('backup.json'));
 const PARAMS = {
-    me: require(path.resolve('user.json')),
-    ...require(path.resolve('params.json'))
+    me: require(path.resolve('resources/app/user.json'))
 };
+Object.assign(
+    PARAMS,
+    require(path.resolve('resources/app/params.json'))
+);
+
 let allTemplates = [];
 let data = [];
 let selectedTemplate, selectedForm, multiInputModel, nameOfMultiInput;
@@ -17,6 +25,10 @@ let libsAreVisible = true;
 let templatesAreVisible = false;
 
 window.onload = async function() {
+    document.title = 'new-invoice';
+    setCloseEvent(window, ipcRenderer, document.title);
+    newWindow(document.title, ipcRenderer);
+    
     PARAMS.libs = PARAMS.libs.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
     // app.ipcRenderer.postMessage()
     const ulLib = document.getElementById('libraries');
@@ -231,18 +243,26 @@ async function getResponse(data) {
             },
             {
                 key: 'innerHTML',
-                value: '<a target="_blank" href="file:///'+ data[i].pathOfsavedFile +'">'+ data[i].name +'</a>'
+                value: '<div>'+ data[i].pathOfsavedFile +'</div>'
             },
             {
                 key: 'style',
                 value: 'cursor: pointer; text-decoration: underline;'
+            },
+            {
+                key: 'onclick',
+                value: showPDF
             }
         ];
 
-        await createElement(h, 'li', param);
+        await createElement(h, 'div', param);
     }
 
     return;
+}
+
+function showPDF(ev) {
+    exec(`start chrome "${ev.currentTarget.innerText}"`);
 }
 
 async function compileAndSave() {
@@ -273,7 +293,7 @@ function autocompleteForm() {
     for(let i = 0, l = inputElmnts.length; i < l - 1; i++) {
         let check = inputElmnts[i].id.split('-');
         if (check.length > 1) {
-            let currentStage = {...PARAMS};
+            let currentStage = Object.assign({}, PARAMS);
             let dataFound = false;
             let j = 0;
             let err = false;
@@ -283,7 +303,7 @@ function autocompleteForm() {
                         dataFound = true;
                         currentStage = currentStage[check[j]];
                     } else {
-                        currentStage = {...currentStage[check[j]]};
+                        currentStage = Object.assign({}, currentStage[check[j]]);
                         j++;
                     }
                 } else {

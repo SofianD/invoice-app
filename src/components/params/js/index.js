@@ -1,10 +1,16 @@
 const path = require('path');
-const view = require(path.resolve('src/js/shared/view/view'));
-const fs = require(path.resolve('src/js/shared/fs/fs'));
-const User = require(path.resolve('user.json'));
-const PARAMS = require(path.resolve('params.json'));
+const view = require(path.resolve('resources/app/src/js/shared/view/view'));
+const fs = require(path.resolve('resources/app/src/js/shared/fs/fs'));
+const User = require(path.resolve('resources/app/user.json'));
+const PARAMS = require(path.resolve('resources/app/params.json'));
+const { ipcRenderer } = require('electron');
+const {setCloseEvent, newWindow} = require(path.resolve('resources/app/src/js/shared/process/process'));
+
 
 window.onload = async function () {
+    document.title = 'params';
+    setCloseEvent(window, ipcRenderer, document.title);
+    newWindow(document.title, ipcRenderer);
     displayMyInfo();
     displayPath();
 }
@@ -47,17 +53,15 @@ function displayPath() {
 }
 
 async function save() {
-    let newUser = {...User};
-    let newParams = {...PARAMS};
+    let newUser = {};
+    let newParams = {};
+    Object.assign(newParams, PARAMS);
+    newParams.path.toSaveFiles = document.getElementById('path-toSaveFiles').value;
     for (const key in User) {
         const value = document.getElementById(`me-${key}`).value;
         newUser[key] = value;
     }
-    for (const key in PARAMS.path){
-        const value = document.getElementById(`path-${key}`).value;
-        newParams.path[key] = value;
-    }
-    await fs.overwrite('user.json', JSON.stringify(newUser, null, 4));
-    await fs.overwrite('params.json', JSON.stringify(newParams, null, 4));
+    await fs.overwrite('resources/app/user.json', JSON.stringify(newUser, null, 4));
+    await fs.overwrite('resources/app/params.json', JSON.stringify(newParams, null, 4));
     window.close();
 }

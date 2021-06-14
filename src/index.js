@@ -1,16 +1,16 @@
-const {BrowserWindow} = require('electron').remote;
-
+const {BrowserWindow: bw} = require('electron').remote;
+// console.log(bw)
 window.onload = () => {
     document.title = 'home';
     let elm = document.getElementsByClassName('container')[0];
     elm.style.backgroundColor = 'whitesmoke';
     elm.style.margin = '0';
-    let win = BrowserWindow.getAllWindows()[0];
+    let win = bw.getAllWindows()[0];
     win.setSize(400, elm.offsetHeight);
     win.setMinimumSize(400, elm.offsetHeight);
     win.setMaximumSize(400, elm.offsetHeight);
     win.maximize();
-    win.center()
+    win.center();
 }
 const router = [
     {
@@ -28,7 +28,7 @@ const router = [
 ];
 function createWindow (name) {
     const page = router.filter(x => x.name === name)[0];
-    const win = new BrowserWindow({
+    const win = new bw({
         width: 800,
         height: 600,
         frame: true,
@@ -49,9 +49,9 @@ function createWindow (name) {
     // win.webContents.openDevTools();
 };
 
-function closeApp(ev) {
-    const wins = BrowserWindow.getAllWindows();
-    for (win of wins) {
-        win.destroy();
+async function closeApp(ev) {
+    const wins = await bw.getAllWindows();
+    for (let i =0; i < wins.length; i++) {
+        wins[i].destroy();
     }
 }

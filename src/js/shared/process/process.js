@@ -1,5 +1,5 @@
 const {resolve} = require('path');
-const {Message} = require(resolve('src/js/shared/class/message/message'));
+const {Message} = require(resolve('resources/app/src/js/shared/class/message/message'));
 
 /**
  * 

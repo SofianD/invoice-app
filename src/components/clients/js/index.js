@@ -1,9 +1,9 @@
 const {resolve} = require('path');
-const CLIENTS = require(resolve('clients.json')).clients;
-const viewjs = require(resolve('src/js/shared/view/view'));
-const fs = require(resolve('src/js/shared/fs/fs'));
+const CLIENTS = require(resolve('resources/app/clients.json')).clients;
+const viewjs = require(resolve('resources/app/src/js/shared/view/view'));
+const fs = require(resolve('resources/app/src/js/shared/fs/fs'));
 const {ipcRenderer} = require('electron');
-const {send, newWindow, setCloseEvent} = require(resolve('src/js/shared/process/process'));
+const {send, newWindow, setCloseEvent} = require(resolve('resources/app/src/js/shared/process/process'));
 
 // STANDALONE WINDOW
 const {remote} = require('electron');
@@ -25,14 +25,14 @@ function displayClients(list) {
         viewjs.createElement(container, 'div', [
             {
                 key: 'id',
-                value: (+id + i)
+                value: (id + i)
             },
             {
                 key: 'className',
                 value: 'container grid m-50'
             }
         ]);
-        const newEl = document.getElementById((+id + i));
+        const newEl = document.getElementById(id + i);
         for (const key in client) {
             viewjs.createElement(newEl, 'label',[
                 {
@@ -73,43 +73,68 @@ function displayClients(list) {
                 }
             ]
         );
-        ClientsList.push({
-            id: (+id + i),
-            ...client,
-            target: document.getElementById(+id + i)
-        });
+        ClientsList.push(
+            Object.assign(
+                {
+                    id: (id + i),
+                    target: document.getElementById(id + i)
+                },
+                client
+            )
+        );
         i++;
     }
 }
 
 function deleteClient(el) {
-    ClientsList.splice(ClientsList.indexOf(ClientsList.filter(x => x.id === +this.parentNode.id)[0]), 1);
+    let target = (ClientsList.filter(x => x.id == this.parentNode.id));
+    target = target[0];
+    // console.log('target');
+    // console.log(target);
+    // console.log(ClientsList.indexOf(target));
+    // console.log('ClientsList.indexOf(target)');
+    ClientsList.splice(ClientsList.indexOf(target), 1);
     this.parentNode.remove();
 }
 
 async function save() {
-    for (const el of document.getElementById('clients').children) {
-        if (el.nodeName === 'DIV' && el.id) {
-            let obj = ClientsList.filter((x) => x.id === +el.id)[0];
-            for (const child of el.children) {
-                if (child.nodeName === 'INPUT') {
-                    obj[child.id] = child.value;
+    const children = document.getElementById('clients').children;
+    const l = children.length;
+
+    // console.log('ClientsList1111 ', ClientsList);
+
+    for (let i = 0; i < l; i++) {
+        if (children[i].nodeName === 'DIV' && children[i].id) {
+            // console.log('ClientsList ', ClientsList);
+            // console.log('children[i] ', children[i]);
+            // console.log(typeof children[i].id);
+            let obj = ClientsList.filter((x) => x.id == children[i].id);
+            // console.log('obj ', obj);
+            obj = obj[0];
+            const inputs = children[i].children;
+            const lgt = inputs.length;
+            for (let y = 0; y < lgt; y++) {
+                if (inputs[y].nodeName === 'INPUT') {
+                    obj[inputs[y].id] = inputs[y].value;
                 }
             }
         }
     }
+    // console.log('FINAL ClientsList ', ClientsList);
 
     const res = await fs.overwrite(
-        'clients.json',
+        'resources/app/clients.json',
         JSON.stringify(
             {
                 clients: 
                     ClientsList.map((x) => {
-                        const {id, target, ...a} = x;
-                        return a;
+                        delete x['id'];
+                        delete x['target'];
+                        return x;
                     })
             }, null, 4)
     );
+    console.log(res);
 }
 
 async function newClient() {
@@ -127,7 +152,7 @@ async function newClient() {
             enableRemoteModule: true,
         }
     });
-    newWin.loadFile(resolve('src/components/clients/components/new-client/index.html'));
+    newWin.loadFile(resolve('resources/app/src/components/clients/components/new-client/index.html'));
 
     // nested process
     // window.open(resolve('src/components/clients/components/new-client/index.html'));
@@ -163,15 +188,16 @@ async function addClient(msg) {
 function searchClient () {
     const el = document.getElementById('search-bar');
     if (el.value.length === 0) {
-        for (client of ClientsList) {
-            client.target.style.display = 'grid';
+        for (let i = 0; i < ClientsList.length; i++) {
+            ClientsList[i].target.style.display = 'grid';
         }
     } else {
-        for (client of ClientsList) {
-            client.target.style.display = 'none';
-        }
-        for (client of ClientsList.filter(x => x.name.toLowerCase().includes(el.value.toLowerCase()))) {
-            client.target.style.display = 'grid';
+        for (let i = 0; i < ClientsList.length; i++) {
+            if (ClientsList[i].name.toLowerCase().includes(el.value.toLowerCase())) {
+                ClientsList[i].target.style.display = 'grid';
+            } else {
+                ClientsList[i].target.style.display = 'none';
+            }
         }
     }
 }

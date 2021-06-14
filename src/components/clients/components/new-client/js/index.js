@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron');
 const {resolve} = require('path');
-const {send, setCloseEvent, newWindow} = require(resolve('src/js/shared/process/process'));
-const viewjs = require(resolve('src/js/shared/view/view'));
+const {send, setCloseEvent, newWindow} = require(resolve('resources/app/src/js/shared/process/process'));
+const viewjs = require(resolve('resources/app/src/js/shared/view/view'));
 
 window.onload = async function () {
     document.title = 'new-client';
@@ -23,11 +23,24 @@ ipcRenderer.on('new-client', (event, arg) => {
 
 function addClient() {
     let client = {};
-    for (const el of document.getElementById('client').children) {
-        if (el.nodeName === 'DIV' && el.id) {
-            for (const child of el.children) {
-                if (child.nodeName === 'INPUT') {
-                    client[child.id] = child.value;
+    // for (const el of document.getElementById('client').children) {
+    //     if (el.nodeName === 'DIV' && el.id) {
+    //         for (const child of el.children) {
+    //             if (child.nodeName === 'INPUT') {
+    //                 client[child.id] = child.value;
+    //             }
+    //         }
+    //     }
+    // }
+    const allDiv  = document.getElementById('client').children;
+    const length = allDiv.length;
+    for (let i = 0; i < length; i++) {
+        if (allDiv[i].nodeName === 'DIV' && allDiv[i].id) {
+            const allInput = allDiv[i].children;
+            const l = allInput.length;
+            for (let y = 0; y < l; y++) {
+                if (allInput[y].nodeName === 'INPUT') {
+                    client[allInput[y].id] = allInput[y].value;
                 }
             }
         }
@@ -60,18 +73,19 @@ function displayView	() {
 
     const container = document.getElementById('target');
     const clientProps = ['name', 'address', 'city', 'codepostal', 'phone'];
-    for (prop of clientProps) {
+    const l = clientProps.length;
+    for (let i = 0; i < l; i++) {
         viewjs.createElement(
             container,
             'label',
             [
                 {
                     key: 'for',
-                    value: prop
+                    value: clientProps[i]
                 },
                 {
                     key: 'innerText',
-                    value: prop
+                    value: clientProps[i]
                 }
             ]
         );
@@ -81,7 +95,7 @@ function displayView	() {
             [
                 {
                     key: 'id',
-                    value: prop
+                    value: clientProps[i]
                 },
                 {
                     key: 'value',

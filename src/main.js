@@ -20,7 +20,6 @@ function createWindow () {
             enableRemoteModule: true,
         }
     });
-
     win.loadFile('src/home.html');
     // win.webContents.openDevTools();
 

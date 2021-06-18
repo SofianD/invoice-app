@@ -2,15 +2,9 @@ const { ipcRenderer } = require('electron');
 const {resolve} = require('path');
 const isDevEnv = process.env.NODE_ENV === undefined;
 let viewjsPath = 'resources/app/src/js/shared/view/view';
-let fsPath = 'resources/app/src/js/shared/fs/fs';
-let userPath = 'resources/app/user.json';
-let paramsPath = 'resources/app/params.json';
 let processPath = 'resources/app/src/js/shared/process/process';
 if (isDevEnv) {
     viewjsPath = 'src/js/shared/view/view';
-    fsPath = 'src/js/shared/fs/fs';
-    userPath = 'user.json';
-    paramsPath = 'params.json';
     processPath = 'src/js/shared/process/process';
 }
 const {send, setCloseEvent, newWindow} = require(resolve(processPath));

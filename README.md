@@ -11,7 +11,7 @@ Interface graphique permettant de:
 -   Option d'autocompletion des infos client à partir de la BDD (après la refonte de la page "Création de facture").
 
 ## à faire plus tard:
--   Option de chiffrement des données si l'utilisateur.
+-   Option de chiffrement des données.
 -   Rendre l'application totalement compatible avec linux et macOS.
 
 ## Pour build:

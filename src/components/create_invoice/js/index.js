@@ -1,17 +1,25 @@
 const invoicejs = require('@sofiand/invoice');
-// const app = require('electron')
 const path = require('path');
 const { ipcRenderer } = require('electron');
 const { exec } = require('child_process');
-const {setCloseEvent, newWindow} = require(path.resolve('resources/app/src/js/shared/process/process'));
 
-// const PARAMS = require(path.resolve('backup.json'));
+const isDevEnv = process.env.NODE_ENV === undefined;
+let processPath = 'resources/app/src/js/shared/process/process';
+let userPath = 'resources/app/user.json';
+let paramsPath = 'resources/app/params.json';
+if (isDevEnv) {
+    userPath = 'user.json';
+    paramsPath = 'params.json';
+    processPath = 'src/js/shared/process/process';
+}
+const {setCloseEvent, newWindow} = require(path.resolve(processPath));
+
 const PARAMS = {
-    me: require(path.resolve('resources/app/user.json'))
+    me: require(path.resolve(userPath))
 };
 Object.assign(
     PARAMS,
-    require(path.resolve('resources/app/params.json'))
+    require(path.resolve(paramsPath))
 );
 
 let allTemplates = [];

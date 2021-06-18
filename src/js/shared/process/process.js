@@ -1,5 +1,11 @@
 const {resolve} = require('path');
-const {Message} = require(resolve('resources/app/src/js/shared/class/message/message'));
+const isDevEnv = process.env.NODE_ENV === undefined;
+
+let pathMessage = 'src/js/shared/class/message/message';;
+if (!isDevEnv) {
+    pathMessage = 'resources/app/src/js/shared/class/message/message';
+}
+const {Message} = require(resolve(pathMessage));
 
 /**
  * 

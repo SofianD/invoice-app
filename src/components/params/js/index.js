@@ -1,11 +1,24 @@
-const path = require('path');
-const view = require(path.resolve('resources/app/src/js/shared/view/view'));
-const fs = require(path.resolve('resources/app/src/js/shared/fs/fs'));
-const User = require(path.resolve('resources/app/user.json'));
-const PARAMS = require(path.resolve('resources/app/params.json'));
 const { ipcRenderer } = require('electron');
-const {setCloseEvent, newWindow} = require(path.resolve('resources/app/src/js/shared/process/process'));
+const path = require('path');
 
+const isDevEnv = process.env.NODE_ENV === undefined;
+let viewjsPath = 'resources/app/src/js/shared/view/view';
+let fsPath = 'resources/app/src/js/shared/fs/fs';
+let userPath = 'resources/app/user.json';
+let paramsPath = 'resources/app/params.json';
+let processPath = 'resources/app/src/js/shared/process/process';
+if (isDevEnv) {
+    viewjsPath = 'src/js/shared/view/view';
+    fsPath = 'src/js/shared/fs/fs';
+    userPath = 'user.json';
+    paramsPath = 'params.json';
+    processPath = 'src/js/shared/process/process';
+}
+const view = require(path.resolve(viewjsPath));
+const fs = require(path.resolve(fsPath));
+const User = require(path.resolve(userPath));
+const PARAMS = require(path.resolve(paramsPath));
+const {setCloseEvent, newWindow} = require(path.resolve(processPath));
 
 window.onload = async function () {
     document.title = 'params';
@@ -61,7 +74,7 @@ async function save() {
         const value = document.getElementById(`me-${key}`).value;
         newUser[key] = value;
     }
-    await fs.overwrite('resources/app/user.json', JSON.stringify(newUser, null, 4));
-    await fs.overwrite('resources/app/params.json', JSON.stringify(newParams, null, 4));
+    await fs.overwrite(userPath, JSON.stringify(newUser, null, 4));
+    await fs.overwrite(paramsPath, JSON.stringify(newParams, null, 4));
     window.close();
 }

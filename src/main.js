@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 let allWin = [];
-
+const isDevEnv = process.env.NODE_ENV === undefined;
 function createWindow () {
     const win = new BrowserWindow({
         width: 400,
@@ -8,6 +8,7 @@ function createWindow () {
         frame: false,
         transparent: true,
         autoHideMenuBar: true,
+        show: false,
         minWidth: 400,
         minHeight:518,
         maxWidth: 400,
@@ -72,13 +73,6 @@ ipcMain.on('new-window', (event, msg) => {
 
 ipcMain.on('close-window', (event, msg) => {
     allWin = allWin.filter(page => page.name !== msg.name);
-    // for (child of msg.childs) {
-    //     const current = allWin.filter(page => page.name === child);
-    //     if (current.length === 1) {
-    //         current[0].window.destroy();
-    //         allWin = allWin.filter(page => page.name !== child);
-    //     }
-    // }
     const l = msg.childs.length;
     for (let i = 0; i < l; i++) {
         const current = allWin.filter(page => page.name === msg.childs[i]);
@@ -88,3 +82,5 @@ ipcMain.on('close-window', (event, msg) => {
         }
     }
 })
+
+console.log('is Dev Env? ', isDevEnv);

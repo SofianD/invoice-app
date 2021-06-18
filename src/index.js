@@ -33,6 +33,7 @@ function createWindow (name) {
         height: 600,
         frame: true,
         transparent: false,
+        show: false,
         autoHideMenuBar: true,
         minHeight:800,
         minWidth: 600,
@@ -43,10 +44,11 @@ function createWindow (name) {
             enableRemoteModule: true,
         }
     });
-
     win.loadFile(page.link);
     win.maximize();
-    // win.webContents.openDevTools();
+    win.once('ready-to-show', () => {
+        win.show();
+    })
 };
 
 async function closeApp(ev) {

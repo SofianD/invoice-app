@@ -1,7 +1,14 @@
 const { ipcRenderer } = require('electron');
 const {resolve} = require('path');
-const {send, setCloseEvent, newWindow} = require(resolve('resources/app/src/js/shared/process/process'));
-const viewjs = require(resolve('resources/app/src/js/shared/view/view'));
+const isDevEnv = process.env.NODE_ENV === undefined;
+let viewjsPath = 'resources/app/src/js/shared/view/view';
+let processPath = 'resources/app/src/js/shared/process/process';
+if (isDevEnv) {
+    viewjsPath = 'src/js/shared/view/view';
+    processPath = 'src/js/shared/process/process';
+}
+const {send, setCloseEvent, newWindow} = require(resolve(processPath));
+const viewjs = require(resolve(viewjsPath));
 
 window.onload = async function () {
     document.title = 'new-client';
@@ -23,15 +30,6 @@ ipcRenderer.on('new-client', (event, arg) => {
 
 function addClient() {
     let client = {};
-    // for (const el of document.getElementById('client').children) {
-    //     if (el.nodeName === 'DIV' && el.id) {
-    //         for (const child of el.children) {
-    //             if (child.nodeName === 'INPUT') {
-    //                 client[child.id] = child.value;
-    //             }
-    //         }
-    //     }
-    // }
     const allDiv  = document.getElementById('client').children;
     const length = allDiv.length;
     for (let i = 0; i < length; i++) {

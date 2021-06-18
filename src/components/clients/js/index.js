@@ -1,11 +1,25 @@
-const {resolve} = require('path');
-const CLIENTS = require(resolve('resources/app/clients.json')).clients;
-const viewjs = require(resolve('resources/app/src/js/shared/view/view'));
-const fs = require(resolve('resources/app/src/js/shared/fs/fs'));
 const {ipcRenderer} = require('electron');
-const {send, newWindow, setCloseEvent} = require(resolve('resources/app/src/js/shared/process/process'));
+const {resolve} = require('path');
 
-// STANDALONE WINDOW
+const isDevEnv = process.env.NODE_ENV === undefined;
+let viewjsPath = 'resources/app/src/js/shared/view/view';
+let fsPath = 'resources/app/src/js/shared/fs/fs';
+let processPath = 'resources/app/src/js/shared/process/process';
+let clientsPath = 'resources/app/clients.json';
+let newClientPath = 'resources/app/src/components/clients/components/new-client/index.html';
+if (isDevEnv) {
+    viewjsPath = 'src/js/shared/view/view';
+    fsPath = 'src/js/shared/fs/fs';
+    processPath = 'src/js/shared/process/process';
+    clientsPath = 'clients.json';
+    newClientPath = 'src/components/clients/components/new-client/index.html';
+}
+const CLIENTS = require(resolve(clientsPath)).clients;
+const viewjs = require(resolve(viewjsPath));
+const fs = require(resolve(fsPath));
+const {send, newWindow, setCloseEvent} = require(resolve(processPath));
+
+// FOR STANDALONE WINDOW
 const {remote} = require('electron');
 
 let ClientsList = [];
@@ -123,7 +137,7 @@ async function save() {
     // console.log('FINAL ClientsList ', ClientsList);
 
     const res = await fs.overwrite(
-        'resources/app/clients.json',
+        clientsPath,
         JSON.stringify(
             {
                 clients: 
@@ -152,7 +166,7 @@ async function newClient() {
             enableRemoteModule: true,
         }
     });
-    newWin.loadFile(resolve('resources/app/src/components/clients/components/new-client/index.html'));
+    newWin.loadFile(resolve(newClientPath));
 
     // nested process
     // window.open(resolve('src/components/clients/components/new-client/index.html'));
